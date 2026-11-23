@@ -249,6 +249,19 @@ Tapşırıq 5. Sığorta polisinin yaradılması - Builder Pattern
                     return this;
                 }
 
+                 @Override
+                    public String toString() {
+                        return policyNo + ": " + plate + ", " + ownerName
+                                + ", " + price + " AZN"
+                                + (driverName != null ? ", driver " + driverName : "")
+                                + (glassCover ? ", glass" : "")
+                                + (theftCover ? ", theft" : "")
+                                + (roadAssistance ? ", road assistance" : "")
+                                + (discountCode != null ? ", discount " + discountCode : "")
+                                + ", duration " + durationMonths + " months"
+                                + (email != null ? ", email " + email : "");
+                    }
+
 
         }
 
