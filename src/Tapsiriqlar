@@ -1,0 +1,264 @@
+Tapşırıq 2. Çatdırılma qiymətinin hesablanması - Strategy Pattern
+
+public interface PaymentProvider {
+
+    boolean pay(double amountInAZN);
+}
+
+public class ProviderOne {
+
+    public int makePayment(int amountInQepik) {
+
+        System.out.println(
+            "Provider One: " + amountInQepik + " qepik"
+        );
+
+
+        return 0;
+    }
+}
+
+public class ProviderTwo {
+
+    public void processPayment(double amountInAZN) {
+
+        System.out.println(
+            "Provider Two: " + amountInAZN + " AZN"
+        );
+
+
+    }
+}
+
+public class ProviderThree {
+
+    public boolean executePayment(double amountInUSD) {
+
+        System.out.println(
+            "Provider Three: " + amountInUSD + " USD"
+        );
+
+        return true;
+    }
+}
+
+public class ProviderOneAdapter implements PaymentProvider {
+
+    private final ProviderOne provider;
+
+    public ProviderOneAdapter(ProviderOne provider) {
+        this.provider = provider;
+    }
+
+    @Override
+    public boolean pay(double amountInAZN) {
+
+        int amountInQepik = (int) Math.round(amountInAZN * 100);
+
+        int result = provider.makePayment(amountInQepik);
+
+        return result == 0;
+    }
+}
+
+public class ProviderTwoAdapter implements PaymentProvider {
+
+    private final ProviderTwo provider;
+
+    public ProviderTwoAdapter(ProviderTwo provider) {
+        this.provider = provider;
+    }
+
+    @Override
+    public boolean pay(double amountInAZN) {
+
+        try {
+            provider.processPayment(amountInAZN);
+            return true;
+
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+}
+
+public class ProviderThreeAdapter implements PaymentProvider {
+
+    private final ProviderThree provider;
+
+    public ProviderThreeAdapter(ProviderThree provider) {
+        this.provider = provider;
+    }
+
+    @Override
+    public boolean pay(double amountInAZN) {
+
+        double amountInUSD = amountInAZN / 1.70;
+
+        return provider.executePayment(amountInUSD);
+    }
+}
+
+public class PaymentService {
+
+    private final PaymentProvider paymentProvider;
+
+    public PaymentService(PaymentProvider paymentProvider) {
+        this.paymentProvider = paymentProvider;
+    }
+
+    public boolean makePayment(double amountInAZN) {
+
+        return paymentProvider.pay(amountInAZN);
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        // Provider 1
+        PaymentProvider adapter1 =
+                new ProviderOneAdapter(new ProviderOne());
+
+        PaymentService service1 =
+                new PaymentService(adapter1);
+
+        System.out.println(
+                "Payment 1: " + service1.makePayment(100)
+        );
+
+
+        // Provider 2
+        PaymentProvider adapter2 =
+                new ProviderTwoAdapter(new ProviderTwo());
+
+        PaymentService service2 =
+                new PaymentService(adapter2);
+
+        System.out.println(
+                "Payment 2: " + service2.makePayment(100)
+        );
+
+
+        // Provider 3
+        PaymentProvider adapter3 =
+                new ProviderThreeAdapter(new ProviderThree());
+
+        PaymentService service3 =
+                new PaymentService(adapter3);
+
+        System.out.println(
+                "Payment 3: " + service3.makePayment(100)
+        );
+    }
+}
+
+
+
+
+Tapşırıq 5. Sığorta polisinin yaradılması - Builder Pattern
+
+
+ static class Policy {
+        private final String policyNo;       // məcburi
+        private final String plate;          // məcburi
+        private final String ownerName;      // məcburi
+        private final double price;          // məcburi
+
+        private final String driverName;     // istəyə bağlı
+        private final boolean glassCover;    // istəyə bağlı
+        private final boolean theftCover;    // istəyə bağlı
+        private final boolean roadAssistance; // istəyə bağlı
+        private final String discountCode;   // istəyə bağlı
+        private final int durationMonths;    // istəyə bağlı
+        private final String email;          // istəyə bağlı
+
+        private Policy(Builder builder){
+        this.policyNo = builder.policyNo;
+        this.plate = builder.plate;
+        this.ownerName = builder.ownerName;
+        this.price = builder.price;
+
+        this.driverName = buiilder.driverName;
+        this.glassCover = builder.glassCover;
+        this.theftCover = builder.theftCover;
+        this.roadAssistance = builder.roadAssistance;
+        this.discountCode = builder.discountCode;
+        this.durationMonths = builder.durationMonths;
+        this.email = builder.email;
+        }
+
+        public static class Builder {
+
+        private final String policyNo;       // məcburi
+        private final String plate;          // məcburi
+        private final String ownerName;      // məcburi
+        private final double price;          // məcburi
+
+        private final String driverName;     // istəyə bağlı
+        private final boolean glassCover;    // istəyə bağlı
+        private final boolean theftCover;    // istəyə bağlı
+        private final boolean roadAssistance; // istəyə bağlı
+        private final String discountCode;   // istəyə bağlı
+        private final int durationMonths =12;    // istəyə bağlı
+        private final String email;          // istəyə bağlı
+
+        public Builder (String policyNo,
+                        String plate,
+                        String ownerName,
+                        String price){
+        this.policyNo = policyNo;
+        this.plate = plate;
+        this.ownerName = ownerName;
+        this.price = price
+        }
+
+         public Builder addDriverName(String driverName) {
+                    this.addDriver = driverName;
+                    return this;
+                }
+
+                public Builder glassCover(boolean value) {
+                    this.glassProtection = value;
+                    return this;
+                }
+
+                public Builder theftCover(boolean value) {
+                    this.theftProtection = value;
+                    return this;
+                }
+
+                public Builder roadAssistance(boolean value) {
+                    this.roadAssistance = value;
+                    return this;
+                }
+
+                public Builder discountCode(String code) {
+                    this.discountCode = code;
+                    return this;
+                }
+
+                public Builder durationMonths(int months) {
+                    this.durationMonths = months;
+                    return this;
+                }
+
+                public Builder email(String email) {
+                    this.email = email;
+                    return this;
+                }
+
+
+        }
+
+
+
+Tapşırıq 3. Ödəniş provayderlərinin qoşulması - Adapter Pattern
+
+
+
+
+
+
+
