@@ -1,3 +1,161 @@
+Tapşırıq 1. Kredit müraciətinin yoxlanması
+class CreditApplication {
+int age;
+boolean blacklisted;
+boolean sanctioned;
+double salary;
+double requestedAmount;
+int workExperienceMonths;
+int creditScore;
+
+public CreditApplication (  int age,
+                            boolean blacklisted,
+                            boolean sanctioned,
+                            double salary,
+                            double requestedAmount,
+                            int workExperienceMonths,
+                            int creditScore) {
+                      this.age=age;
+                      this.blacklisted = blacklisted;
+                      this.sanctioned = sanctioned;
+                      this.salary = salary;
+                      this.requestedAmount = requestedAmount;
+                      this.workExperienceMonths = workExperienceMonths;
+                      this.creditScore = creditScore;
+                            }
+}
+
+abstract class CreditCheck {
+     protected CreditCheck next;
+
+     public CreditCheck setNext (CreditCHeck next) {
+     this.next=next;
+     return next;
+     }
+
+     public boolean check(CreditApplication application) {
+      if (!process(application)) {
+                 System.out.println("Müraciət rədd edildi!");
+                 return false;
+             }
+
+             if (next == null) {
+                 return true;
+             }
+
+             return next.check(application);
+     }
+
+     protected abstract boolean process(CreditApplication application);
+}
+
+ class AgeCheck extends CreditCheck {
+
+     @Override
+     protected boolean process(CreditApplication app) {
+         System.out.println("Yaş yoxlanılır...");
+
+         return app.age >= 18 && app.age <= 65;
+     }
+ }
+
+
+ class BlacklistCheck extends CreditCheck {
+
+     @Override
+     protected boolean process(CreditApplication app) {
+         System.out.println("Qara siyahı yoxlanılır...");
+
+         return !app.blacklisted;
+     }
+ }
+
+
+ class SanctionCheck extends CreditCheck {
+
+     @Override
+     protected boolean process(CreditApplication app) {
+         System.out.println("Sanksiya siyahısı yoxlanılır...");
+
+         return !app.sanctioned;
+     }
+ }
+
+
+ class WorkExperienceCheck extends CreditCheck {
+
+     @Override
+     protected boolean process(CreditApplication app) {
+         System.out.println("İş stajı yoxlanılır...");
+
+         return app.workExperienceMonths >= 6;
+     }
+ }
+
+ class SalaryLimitCheck extends CreditCheck {
+
+     @Override
+     protected boolean process(CreditApplication app) {
+         System.out.println("Maaş limiti yoxlanılır...");
+
+         return app.requestedAmount <= app.salary * 10;
+     }
+ }
+
+ class CreditBureauCheck extends CreditCheck {
+
+     @Override
+     protected boolean process(CreditApplication app) {
+         System.out.println("Kredit bürosuna pullu sorğu göndərildi...");
+
+         return app.creditScore >= 600;
+     }
+ }
+
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        CreditCheck age = new AgeCheck();
+        CreditCheck blacklist = new BlacklistCheck();
+        CreditCheck sanction = new SanctionCheck();
+        CreditCheck work = new WorkExperienceCheck();
+        CreditCheck salary = new SalaryLimitCheck();
+        CreditCheck bureau = new CreditBureauCheck();
+
+        age.setNext(blacklist)
+           .setNext(sanction)
+           .setNext(work)
+           .setNext(salary)
+           .setNext(bureau);
+
+        CreditApplication application =
+                new CreditApplication(
+                        30,
+                        false,
+                        false,
+                        2000,
+                        15000,
+                        12,
+                        750
+                );
+
+        boolean approved = age.check(application);
+
+        if (approved) {
+            System.out.println("Kredit təsdiqləndi!");
+        } else {
+            System.out.println("Kredit rədd edildi!");
+        }
+    }
+}
+
+
+
+
+
+
 Tapşırıq 2. Çatdırılma qiymətinin hesablanması - Strategy Pattern
 
 public interface PaymentProvider {
